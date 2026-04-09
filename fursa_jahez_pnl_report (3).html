@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fursa – Jahez P&L (Reclassified)</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #06090F;
+    --surface: #0D1117;
+    --surface2: #161B22;
+    --surface3: #1C2333;
+    --border: rgba(139,148,158,0.12);
+    --border-accent: rgba(56,189,248,0.2);
+    --text: #E6EDF3;
+    --text-dim: #8B949E;
+    --text-muted: #6E7681;
+    --accent: #58A6FF;
+    --accent2: #79C0FF;
+    --green: #3FB950;
+    --green-soft: rgba(63,185,80,0.12);
+    --red: #F85149;
+    --red-soft: rgba(248,81,73,0.10);
+    --amber: #D29922;
+    --amber-soft: rgba(210,153,34,0.10);
+    --purple: #BC8CFF;
+    --purple-soft: rgba(188,140,255,0.10);
+    --teal: #39D2C0;
+    --teal-soft: rgba(57,210,192,0.10);
+    --pink: #F778BA;
+    --pink-soft: rgba(247,120,186,0.10);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    padding: 48px 24px;
+    line-height: 1.5;
+  }
+
+  .container { max-width: 960px; margin: 0 auto; }
+
+  /* ── Header ── */
+  .header {
+    text-align: center;
+    margin-bottom: 56px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 2px;
+    background: var(--accent);
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 22px;
+    border: 1px solid var(--border-accent);
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+    background: rgba(88,166,255,0.06);
+  }
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 38px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+    background: linear-gradient(135deg, var(--text) 0%, var(--accent2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .header .sub {
+    color: var(--text-muted);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── KPI Strip ── */
+  .kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 44px;
+  }
+  .kpi {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .kpi .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-bottom: 10px;
+  }
+  .kpi .label {
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.8px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  .kpi .val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 20px;
+    font-weight: 600;
+  }
+  .kpi .tag {
+    font-size: 11px;
+    font-weight: 600;
+    margin-top: 6px;
+    padding: 2px 8px;
+    border-radius: 6px;
+    display: inline-block;
+  }
+
+  /* ── Revenue Block ── */
+  .rev-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 28px;
+    margin-bottom: 12px;
+  }
+  .rev-block .rev-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .rev-block .rev-title {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--accent);
+  }
+  .rev-block .rev-total {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .rev-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    font-size: 13.5px;
+  }
+  .rev-line .code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    width: 55px;
+    flex-shrink: 0;
+  }
+  .rev-line .name { flex: 1; color: var(--text-dim); font-weight: 500; }
+  .rev-line .amt {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    text-align: right;
+    min-width: 100px;
+  }
+
+  /* ── Gross Profit Banner ── */
+  .gp-banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 22px 28px;
+    background: linear-gradient(135deg, rgba(63,185,80,0.08), rgba(63,185,80,0.03));
+    border: 1px solid rgba(63,185,80,0.25);
+    border-radius: 14px;
+    margin-bottom: 36px;
+  }
+  .gp-banner .gp-label {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--green);
+    letter-spacing: 0.3px;
+  }
+  .gp-banner .gp-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--green);
+  }
+
+  /* ── Expense Category ── */
+  .opex-section-title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    padding-left: 4px;
+  }
+
+  .cat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+  .cat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .cat-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    width: 26px;
+    height: 26px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    margin-right: 12px;
+    flex-shrink: 0;
+  }
+  .cat-title {
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    flex: 1;
+  }
+  .cat-total {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .cat-body { padding: 4px 0; }
+  .cat-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 24px 10px 62px;
+    font-size: 13px;
+    border-bottom: 1px solid rgba(139,148,158,0.06);
+  }
+  .cat-line:last-child { border-bottom: none; }
+  .cat-line .name { color: var(--text-dim); font-weight: 500; flex: 1; }
+  .cat-line .amt {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    font-weight: 500;
+    min-width: 90px;
+    text-align: right;
+  }
+
+  /* Category colors */
+  .cat-1 .cat-num { background: var(--purple-soft); color: var(--purple); }
+  .cat-1 .cat-total { color: var(--purple); }
+  .cat-2 .cat-num { background: var(--amber-soft); color: var(--amber); }
+  .cat-2 .cat-total { color: var(--amber); }
+  .cat-3 .cat-num { background: var(--teal-soft); color: var(--teal); }
+  .cat-3 .cat-total { color: var(--teal); }
+  .cat-4 .cat-num { background: var(--pink-soft); color: var(--pink); }
+  .cat-4 .cat-total { color: var(--pink); }
+  .cat-5 .cat-num { background: rgba(139,148,158,0.1); color: var(--text-dim); }
+  .cat-5 .cat-total { color: var(--text-dim); }
+  .cat-6 .cat-num { background: var(--red-soft); color: var(--red); }
+  .cat-6 .cat-total { color: var(--red); }
+
+  /* ── Total OpEx Banner ── */
+  .total-opex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 28px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    margin: 20px 0 12px;
+  }
+  .total-opex .label { font-weight: 700; font-size: 14px; }
+  .total-opex .val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--red);
+  }
+
+  /* ── Net Loss Banner ── */
+  .net-banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 28px;
+    background: linear-gradient(135deg, rgba(248,81,73,0.08), rgba(248,81,73,0.02));
+    border: 2px solid rgba(248,81,73,0.3);
+    border-radius: 14px;
+    margin-top: 12px;
+  }
+  .net-banner .label {
+    font-size: 16px;
+    font-weight: 700;
+  }
+  .net-banner .val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--red);
+  }
+
+  /* ── Expense Composition Bar ── */
+  .comp-section { margin-top: 36px; }
+  .comp-title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+    margin-bottom: 14px;
+    padding-left: 4px;
+  }
+  .comp-bar {
+    display: flex;
+    height: 14px;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    gap: 2px;
+  }
+  .comp-bar div { height: 100%; border-radius: 3px; }
+  .comp-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 0 4px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-dim);
+    font-weight: 500;
+  }
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+  .legend-pct {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  /* ── Footer ── */
+  .footer {
+    text-align: center;
+    margin-top: 44px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 11.5px;
+    letter-spacing: 0.3px;
+  }
+
+  @media print {
+    body { background: #fff; color: #111; padding: 20px; }
+    .kpi, .cat, .rev-block, .total-opex { background: #fafafa; border-color: #e0e0e0; }
+    .gp-banner { background: #f0fdf4; border-color: #86efac; }
+    .net-banner { background: #fef2f2; border-color: #fca5a5; }
+    .header h1 { background: none; -webkit-text-fill-color: #111; color: #111; }
+    .badge { border-color: #999; color: #555; background: transparent; }
+    .kpi .val, .cat-total, .total-opex .val, .net-banner .val { color: #111; }
+    .positive, .gp-banner .gp-label, .gp-banner .gp-val { color: #16a34a !important; }
+    .negative { color: #dc2626 !important; }
+    * { color: #333; }
+    .cat-line .name, .rev-line .name { color: #555; }
+    .footer, .kpi .label, .comp-title, .opex-section-title { color: #888; }
+  }
+
+  @media (max-width: 700px) {
+    .kpi-strip { grid-template-columns: 1fr 1fr; }
+    .kpi .val { font-size: 17px; }
+    .header h1 { font-size: 28px; }
+    .cat-line { padding-left: 48px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ═══ HEADER ═══ -->
+  <div class="header">
+    <div class="badge">شركة فرصة — Fursa Company</div>
+    <h1>Profit & Loss Statement</h1>
+    <div class="sub">1 May 2025 — 31 March 2026 &nbsp;·&nbsp; 11 Months &nbsp;·&nbsp; Reclassified</div>
+  </div>
+
+  <!-- ═══ KPIs ═══ -->
+  <div class="kpi-strip">
+    <div class="kpi">
+      <div class="dot" style="background:var(--accent);"></div>
+      <div class="label">Revenue</div>
+      <div class="val" style="color:var(--accent);">91,474.96</div>
+    </div>
+    <div class="kpi">
+      <div class="dot" style="background:var(--green);"></div>
+      <div class="label">Gross Profit</div>
+      <div class="val" style="color:var(--green);">91,474.96</div>
+    </div>
+    <div class="kpi">
+      <div class="dot" style="background:var(--amber);"></div>
+      <div class="label">Total OpEx</div>
+      <div class="val" style="color:var(--amber);">265,797.11</div>
+    </div>
+    <div class="kpi">
+      <div class="dot" style="background:var(--red);"></div>
+      <div class="label">Net Loss</div>
+      <div class="val" style="color:var(--red);">(174,322.15)</div>
+    </div>
+  </div>
+
+  <!-- ═══ REVENUE & COGS ═══ -->
+  <div class="rev-block">
+    <div class="rev-header">
+      <span class="rev-title">Revenue</span>
+      <span class="rev-total">91,474.96</span>
+    </div>
+    <div class="rev-line"><span class="code">414003</span><span class="name">Delivery Revenue – Jahez</span><span class="amt">90,161.96</span></div>
+    <div class="rev-line"><span class="code">414004</span><span class="name">Other Revenues – Jahez (Tips / Bonus / Adj.)</span><span class="amt">1,313.00</span></div>
+  </div>
+
+  <!-- ═══ GROSS PROFIT ═══ -->
+  <div class="gp-banner">
+    <span class="gp-label">Gross Profit</span>
+    <span class="gp-val">91,474.96</span>
+  </div>
+
+  <!-- ═══ OPERATING EXPENSES ═══ -->
+  <div class="opex-section-title">Operating Expenses</div>
+
+  <!-- 1. Personnel -->
+  <div class="cat cat-1">
+    <div class="cat-header">
+      <div class="cat-title"><span class="cat-num">1</span>Personnel Costs</div>
+      <span class="cat-total">(86,231.30)</span>
+    </div>
+    <div class="cat-body">
+      <div class="cat-line"><span class="name">Salaries & Wages</span><span class="amt">75,759.97</span></div>
+      <div class="cat-line"><span class="name">GOSI (Social Insurance)</span><span class="amt">10,471.33</span></div>
+    </div>
+  </div>
+
+  <!-- 2. Government -->
+  <div class="cat cat-2">
+    <div class="cat-header">
+      <div class="cat-title"><span class="cat-num">2</span>Government & Regulatory Costs</div>
+      <span class="cat-total">(72,215.10)</span>
+    </div>
+    <div class="cat-body">
+      <div class="cat-line"><span class="name">Iqama & MOL Fees</span><span class="amt">66,579.00</span></div>
+      <div class="cat-line"><span class="name">Licenses & Certifications</span><span class="amt">1,825.00</span></div>
+      <div class="cat-line"><span class="name">Other Government Expenses</span><span class="amt">3,811.10</span></div>
+    </div>
+  </div>
+
+  <!-- 3. Fuel -->
+  <div class="cat cat-3">
+    <div class="cat-header">
+      <div class="cat-title"><span class="cat-num">3</span>Vehicle Operating Costs — Fuel</div>
+      <span class="cat-total">(33,784.17)</span>
+    </div>
+    <div class="cat-body">
+      <div class="cat-line"><span class="name">Fuel & Oil</span><span class="amt">31,353.17</span></div>
+      <div class="cat-line"><span class="name">Fuel Adjustment</span><span class="amt">2,431.00</span></div>
+    </div>
+  </div>
+
+  <!-- 4. Maintenance -->
+  <div class="cat cat-4">
+    <div class="cat-header">
+      <div class="cat-title"><span class="cat-num">4</span>Vehicle Maintenance & Repairs</div>
+      <span class="cat-total">(6,925.61)</span>
+    </div>
+    <div class="cat-body">
+      <div class="cat-line"><span class="name">Maintenance</span><span class="amt">550.15</span></div>
+      <div class="cat-line"><span class="name">Maintenance Adjustment</span><span class="amt">865.99</span></div>
+      <div class="cat-line"><span class="name">Vehicle Operating Costs Adjustment</span><span class="amt">5,509.47</span></div>
+    </div>
+  </div>
+
+  <!-- 5. Other -->
+  <div class="cat cat-5">
+    <div class="cat-header">
+      <div class="cat-title"><span class="cat-num">5</span>Other Operating Expenses</div>
+      <span class="cat-total">(27,056.88)</span>
+    </div>
+    <div class="cat-body">
+      <div class="cat-line"><span class="name">Purchases (مشتريات بضاعة)</span><span class="amt">331.35</span></div>
+      <div class="cat-line"><span class="name">Purchase Returns (مردودات المشتريات)</span><span class="amt" style="color:var(--green);">(218.80)</span></div>
+      <div class="cat-line"><span class="name">Accommodation (سكن – 3,000 × 3 months)</span><span class="amt">9,000.00</span></div>
+      <div class="cat-line"><span class="name">Telecom & Internet</span><span class="amt">1,495.00</span></div>
+      <div class="cat-line"><span class="name">Jahez Fees</span><span class="amt">1,875.00</span></div>
+      <div class="cat-line"><span class="name">Bank Charges</span><span class="amt">56.96</span></div>
+      <div class="cat-line"><span class="name">General Operating Expenses</span><span class="amt">4,979.71</span></div>
+      <div class="cat-line"><span class="name">Miscellaneous Expenses</span><span class="amt">1,530.00</span></div>
+      <div class="cat-line"><span class="name">General Administrative Costs</span><span class="amt">8,007.66</span></div>
+    </div>
+  </div>
+
+  <!-- 6. Depreciation -->
+  <div class="cat cat-6">
+    <div class="cat-header">
+      <div class="cat-title"><span class="cat-num">6</span>Depreciation (Vehicles)</div>
+      <span class="cat-total">(39,584.05)</span>
+    </div>
+    <div class="cat-body">
+      <div class="cat-line"><span class="name">Monthly depreciation 3,598.55 × 11 months</span><span class="amt">39,584.05</span></div>
+    </div>
+  </div>
+
+  <!-- ═══ TOTAL OPEX ═══ -->
+  <div class="total-opex">
+    <span class="label">Total Operating Expenses</span>
+    <span class="val">(265,797.11)</span>
+  </div>
+
+  <!-- ═══ NET LOSS ═══ -->
+  <div class="net-banner">
+    <span class="label">Net Profit / (Loss)</span>
+    <span class="val">(174,322.15) SAR</span>
+  </div>
+
+  <!-- ═══ COMPOSITION BAR ═══ -->
+  <div class="comp-section">
+    <div class="comp-title">Expense Composition</div>
+    <div class="comp-bar">
+      <div style="width:32.4%;background:var(--purple);" title="Personnel"></div>
+      <div style="width:27.2%;background:var(--amber);" title="Government"></div>
+      <div style="width:12.7%;background:var(--teal);" title="Fuel"></div>
+      <div style="width:2.6%;background:var(--pink);" title="Maintenance"></div>
+      <div style="width:10.2%;background:var(--text-muted);" title="Other"></div>
+      <div style="width:14.9%;background:var(--red);" title="Depreciation"></div>
+    </div>
+    <div class="comp-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--purple);"></div>Personnel <span class="legend-pct">32.4%</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--amber);"></div>Government <span class="legend-pct">27.2%</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--teal);"></div>Fuel <span class="legend-pct">12.7%</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--pink);"></div>Maintenance <span class="legend-pct">2.6%</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--text-muted);"></div>Other <span class="legend-pct">10.2%</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--red);"></div>Depreciation <span class="legend-pct">14.9%</span></div>
+    </div>
+  </div>
+
+  <!-- ═══ FOOTER ═══ -->
+  <div class="footer">
+    Fursa Company — Jahez Operations &nbsp;·&nbsp; P&L Statement (Reclassified) &nbsp;·&nbsp; May 2025 – Mar 2026 &nbsp;·&nbsp; All amounts in SAR
+  </div>
+
+</div>
+</body>
+</html>
